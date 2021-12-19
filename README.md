@@ -1,2 +1,2 @@
-# g-ve
+# göve
 Go game with LÖVE
