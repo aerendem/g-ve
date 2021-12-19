@@ -1,0 +1,15 @@
+{
+    "configurations": [
+      {
+        "type": "lua-local",
+        "request": "launch",
+        "name": "Löve Executable",
+        "program": {
+          "command": "C:/Program Files/LOVE/love.exe"
+        },
+        "args": [
+          "${workspaceFolder}"
+        ]
+      }
+    ]
+  }
