@@ -1,20 +1,20 @@
-local player = {}
+player = {}
 player.__index = player
 
 require("love")
 
-function player.new(color,name)
+function player.New(name, color)
    local self = setmetatable({}, player)
 
-   self.__index = self
-   self.color = color
-   self.name = name
+    self.__index = self
+    self.color = color
+    self.name = name
 
-   return self
+    return self
 end
 
-function player:printColor()
-   love.graphics.print(self.color,0,0,0,5,5)
+function player:PrintColor() 
+   love.graphics.print(self.color, 0, 0, 0, 5, 5) 
 end
 
 return player
