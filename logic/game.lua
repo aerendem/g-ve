@@ -26,7 +26,7 @@ function game:StartGame()
    if self.state ~= 2 then
       self.player1 = player.New("Ali", colors.red)
       self.player2 = player.New("Atakan", colors.lime)
-
+      
       --TEMP
       local stone = stone.New(self.player2, 2, 5)
       board:AddStoneToBoard(stone)
@@ -43,22 +43,47 @@ function game:GetGameState()
    return self.state
 end
 
+function game:SetWinner()
+   if self.player1.score > self.player2.score then
+      self.winner = self.player1
+   elseif self.player1.score < self.player2.score then
+      self.winner = self.player2
+   else
+      self.winner = self.player1
+   end
+end
+
 function game:EndGame()
-   if self.state == 2 then
-      
+  if self.state == 2 then
+      game:SetWinner()
+
       --Set board and stones unvisible, clean after setting it invisible
       board.showBoard = false
       board:CleanBoard()
 
+      UI:DrawWinnerLabel(self.winner)
+      
       self.state = 3
+
+      local clickMe = urutora.button({
+         text = 'Click to start!',
+         x = 300, y = 300,
+         w = 200,
+      })
+   
+      clickMe:action(function(e)
+         print("AAAAAAAAAAAAAA")
+         game:StartGame()	
+         clickMe:deactivate()
+      end)
+   
+      urutora:add(clickMe)
    end
 end
 
-function game:RestartGame()
+function game:ShowScores()
    if self.state == 2 then
-      
-
-      self.state = 3
+      UI:DrawScores(self.player1, self.player2)
    end
 end
 

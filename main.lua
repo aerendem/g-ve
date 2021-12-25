@@ -3,11 +3,12 @@ if os.getenv("LOCAL_LUA_DEBUGGER_VSCODE") == "1" then
   require("lldebugger").start()
 end
 
-local game = require("logic/game")
+game = require("logic/game")
 require("logic/board")
 local urutora = require("dependencies/urutora")
 local draw = require('UI')
 local stone = require("logic/stone")
+local input = require("input")
 
 function love.load()
 	local startingGameState = 1 -- 1: start; 2: play; 3: gameover
@@ -15,22 +16,16 @@ function love.load()
 	local field_size = 50
 	field_lines = 9
 
-
-
 	urutora = urutora:new()
 	UI = draw.new(9,55)
 
-
-	--input = input.New()
+	input = input.New()
+	input:BindInitialEvents(urutora)
 
 	board = board.New(3)
 
 	game = game.New(startingGameState)
 	
-	
-
-	--game:EndGame()
-
 	love.window.setMode(field_size*10, field_size*10, resizable)
 
 	local clickMe = urutora.button({
@@ -41,24 +36,20 @@ function love.load()
 
 	clickMe:action(function(e)
 		print("AAAAAAAAAAAAAA")
-		game:StartGame()
+		game:StartGame()	
 		clickMe:deactivate()
 	end)
 
 	urutora:add(clickMe)
-
-	function love.mousepressed(x, y, button) urutora:pressed(x, y) end
-	function love.mousemoved(x, y, dx, dy) urutora:moved(x, y, dx, dy) end
-	function love.mousereleased(x, y, button) urutora:released(x, y) end
-	function love.textinput(text) urutora:textinput(text) end
-	function love.wheelmoved(x, y) urutora:wheelmoved(x, y) end
 end
 
 function love.draw()
 	urutora:draw()
 	board:DrawBoard()
+	game:ShowScores()
 end
 
 function love.update(dt)
 	urutora:update(dt)
+
 end

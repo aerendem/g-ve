@@ -6,9 +6,10 @@ require("love")
 function player.New(name, color)
    local self = setmetatable({}, player)
 
-    self.__index = self
-    self.color = color
-    self.name = name
+   self.__index = self
+   self.color = color
+   self.score = 0
+   self.name = name
 
     return self
 end

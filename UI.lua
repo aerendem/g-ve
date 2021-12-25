@@ -44,10 +44,11 @@ function UI:DrawBoard()
     end
 end
 
-function UI:Scores()
-    love.graphics.print("Red: " .. self.score_a, self.field_size,
+function UI:DrawScores(player1, player2)
+    love.graphics.setColor(255, 255, 255)
+    love.graphics.print(player1.name..": " .. player1.score, self.field_size,
                         self.field_size / 4)
-    love.graphics.print("Blue: " .. self.score_b, 3 * self.field_size,
+    love.graphics.print(player2.name..": " .. player2.score, 3 * self.field_size,
                         self.field_size / 4)
     love.graphics.print("Completion: " .. self.completion_num %
                             (self.field_lines * self.field_lines),
@@ -58,6 +59,14 @@ function UI:DrawPiece(row, column, color)
     love.graphics.setColor(color[1], color[2], color[3])
     love.graphics.circle("fill", row * self.field_size,
                          column * self.field_size, 20)
+                
+end
+
+function UI:DrawWinnerLabel(winnerPlayer)
+    local label = urutora.text({ winnerPlayer.name .. "has won with "..winnerPlayer.score.." score", 250, 250, self.field_size,
+    self.field_size})
+    label:draw()
+    love.graphics.print(winnerPlayer.name .. "has won with "..winnerPlayer.score.." score", 250, 250)
 end
 
 return UI

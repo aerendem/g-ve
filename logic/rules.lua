@@ -3,7 +3,7 @@ rules.__index = rules
 
 require("love")
 
-function rules.new(pieceMatrix,fieldLines)
+function rules.new()
    local self = setmetatable({}, rules)
 
    self.__index = self
