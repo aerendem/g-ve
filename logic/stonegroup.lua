@@ -36,6 +36,10 @@ function stoneGroup:RemoveStone()
     self.stones[table.find(self.stones, stone)] = nil
 end
 
+function stoneGroup:CalculateLiberties()
+    
+end
+
 function stoneGroup:MergeGroup()
     -- _stones.UnionWith(slaveGroup.GetStones());
     -- _liberties.UnionWith(slaveGroup.GetLiberties());

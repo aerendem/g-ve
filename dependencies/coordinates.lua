@@ -3,7 +3,7 @@ coordinates.__index = coordinates
 
 require("love")
 
-function coordinates.new(x, y)
+function coordinates.New(x, y)
    local self = setmetatable({}, coordinates)
 
    self.__index = self

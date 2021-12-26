@@ -27,7 +27,6 @@ end
 function game.GetInstance(gameState, player1, player2)
    if instance == nil then
       instance =  game.New(gameState, player1, player2)
-      
    end
 
    return instance
@@ -37,10 +36,6 @@ function game:StartGame()
    if self.state ~= 2 then
       self.player1 = player.New("Ali", colors.red)
       self.player2 = player.New("Atakan", colors.lime)
-      
-      --TEMP
-      local stone = stone.New(self.player2, 2, 5)
-      board:AddStoneToBoard(stone)
 
       board.showBoard = true
    
@@ -104,6 +99,8 @@ function game:PassTurn()
    else
       self.currentTurnOwner = self.player1
    end
+
+   board:UpdateBoard()
 end
 
 return game
