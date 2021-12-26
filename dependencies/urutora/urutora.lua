@@ -1,6 +1,6 @@
 local modules = (...):gsub('%.[^%.]+$', '') .. "."
 local utils = require(modules .. 'utils')
-local class = require(modules .. 'class')
+local class = require("dependencies/class")
 
 local lovg = love.graphics
 
