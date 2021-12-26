@@ -7,6 +7,8 @@ require("logic/player")
 local stone = require("logic/stone")
 local colors = require("dependencies/colors")
 
+local instance
+
 function game.New(gameState, player1, player2)
    local self = setmetatable({}, game)
 
@@ -20,6 +22,14 @@ function game.New(gameState, player1, player2)
    self.winner = nil
 
    return self
+end
+
+function game.GetInstance(gameState, player1, player2)
+   if instance == nil then
+      return game.New(gameState, player1, player2)
+   else
+      return instance
+   end
 end
 
 function game:StartGame()

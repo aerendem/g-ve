@@ -5,6 +5,8 @@ require("love")
 require("UI")
 require("dependencies/table")
 
+local instance
+
 function board.New(boardLines)
    local self = setmetatable({}, board)
 
@@ -14,6 +16,14 @@ function board.New(boardLines)
    self.stones = {}
 
    return self
+end
+
+function board.GetInstance(boardLines)
+   if instance == nil then
+      return gameboard.New(boardLines)
+   else
+      return instance
+   end
 end
 
 function board:AddStoneToBoard(stone)
