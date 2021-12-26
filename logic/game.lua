@@ -26,10 +26,11 @@ end
 
 function game.GetInstance(gameState, player1, player2)
    if instance == nil then
-      return game.New(gameState, player1, player2)
-   else
-      return instance
+      instance =  game.New(gameState, player1, player2)
+      
    end
+
+   return instance
 end
 
 function game:StartGame()

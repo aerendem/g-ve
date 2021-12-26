@@ -22,9 +22,9 @@ function love.load()
 	input = input.New()
 	input:BindInitialEvents(urutora)
 
-	board = board.New(3)
+	board = board.GetInstance(3)
 
-	game = game.New(startingGameState)
+	game = game.GetInstance(startingGameState)
 	
 	love.window.setMode(field_size*10, field_size*10, resizable)
 

@@ -57,8 +57,8 @@ end
 
 function UI:DrawPiece(row, column, color)
     love.graphics.setColor(color[1], color[2], color[3])
-    love.graphics.circle("fill", row * self.field_size,
-                         column * self.field_size, 20)
+    love.graphics.circle("fill", column * self.field_size,
+                         row * self.field_size, 20)
                 
 end
 

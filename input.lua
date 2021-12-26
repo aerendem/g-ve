@@ -5,6 +5,8 @@ require("love")
 require("UI")
 require("dependencies/urutora")
 require("logic/game")
+local stone = require("logic/stone")
+
 function input.New()
    local self = setmetatable({}, input)
 
@@ -31,13 +33,18 @@ function input:BindInitialEvents(urutora)
     function love.mousepressed(x, y, button) 
         urutora:pressed(x, y) 
         if game.state == 2 then
-            print(x,y)
-            for col = 1, 9 do
+            for col = 1, 9 do 
                 for row = 1, 9 do
-                    if math.sqrt((x - (col*9))^2 + (y - (row*9))^2) <= 25 then
-                        print("rak rak konser kkonser")
-                        UI:DrawPiece(row, col, game.currentTurnOwner.color)
-                    end
+                    if (x - 15 <=  (55 + ((col-1) * 53)) and  x + 15 >=  (55 + ((col-1) * 53)))  then
+                        if (y - 15 <=  (55 + ((row-1) * 53)) and  y + 15 >=  (55 + ((row-1) * 53)))  then
+                            print(row,col)
+                            local newStone = stone.New(game.currentTurnOwner,row,col)
+                            local game = game.GetInstance()
+                            local board = board.GetInstance()
+                            board:AddStoneToBoard(newStone)
+                            game:PassTurn()
+                         end
+                     end
                 end
             end
         end

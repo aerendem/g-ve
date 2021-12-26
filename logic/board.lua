@@ -20,10 +20,9 @@ end
 
 function board.GetInstance(boardLines)
    if instance == nil then
-      return gameboard.New(boardLines)
-   else
-      return instance
+      instance =  board.New(boardLines)
    end
+   return instance
 end
 
 function board:AddStoneToBoard(stone)
