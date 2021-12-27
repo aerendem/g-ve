@@ -7,18 +7,26 @@ function coordinates.New(x, y)
    local self = setmetatable({}, coordinates)
 
    self.__index = self
-   self.x = x or nil
-   self.y = y or nil
+   self.col = x or nil
+   self.row = y or nil
 
    return self
 end
 
 function coordinates:GetX()
-    return self.x
+    return self.col
 end
 
 function coordinates:GetY()
-    return self.y
+    return self.row
+end
+
+function coordinates:Compare(otherCoordinate)
+    if self.col == otherCoordinate.col and self.row == otherCoordinate.row then
+        return false
+    end
+
+    return true
 end
 
 function coordinates:UnionWith()
