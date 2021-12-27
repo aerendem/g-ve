@@ -31,7 +31,10 @@ function stoneGroup:GetStones()
 end
 
 function stoneGroup:AddStone(stone)
-    table.insert(self.stones, stone)
+    if table.find(self.stones, stone) == nil then
+        table.insert(self.stones, stone)
+    end
+   
 end
 
 function stoneGroup:RemoveStone()
@@ -64,14 +67,12 @@ function stoneGroup:CalculateLiberties()
         for i, sameGroupStone in ipairs(self.stones) do
             if sameGroupStone.coordinates.col == left then
                 isLeftEmpty = false
-            end
-            if sameGroupStone.coordinates.col == right then
+            elseif sameGroupStone.coordinates.col == right then
                 isRightEmpty = false
             end
             if sameGroupStone.coordinates.row == up then
                 isUpEmpty = false
-            end
-            if sameGroupStone.coordinates.row == down then
+            elseif sameGroupStone.coordinates.row == down then
                 isDownEmpty = false
             end
         end
@@ -126,7 +127,8 @@ function stoneGroup:CalculateLiberties()
     end
     
     print(#self.stones)
-    pprint(self.liberties)
+    --pprint(self.liberties)
+   
 end
 
 function stoneGroup:CaptureGroup()
@@ -143,7 +145,7 @@ end
 function stoneGroup:MergeGroups(otherGroups)
     for _, otherGroup in ipairs(otherGroups) do
         print("GROUP MERGED")
-        if otherGroup ~= self then
+        if otherGroup ~= self and self.owner == otherGroup.owner then
             --pprint("Merged the group with id of ".. otherGroup.id.." to "..self.id)
             for _,stone in ipairs(otherGroup.stones) do
                 stone.stoneGroup = self

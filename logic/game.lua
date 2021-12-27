@@ -93,14 +93,14 @@ function game:ShowScores()
    end
 end
 
-function game:PassTurn()
+function game:PassTurn()   
+   board:UpdateBoard()
+
    if self.currentTurnOwner == self.player1 then
       self.currentTurnOwner = self.player2
    else
       self.currentTurnOwner = self.player1
    end
-
-   board:UpdateBoard()
 end
 
 return game
