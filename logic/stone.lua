@@ -39,7 +39,7 @@ function stone:AttachToExistingStoneGroup(groups)
    if #groups == 1 then
       groups[1]:AddStone(self)
    elseif #groups > 1 then
-      self.stoneGroup:MergeWithOtherGroups(otherGroups)
+      self.stoneGroup:MergeWithOtherGroups(groups)
    end
 end
 

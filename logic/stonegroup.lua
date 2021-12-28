@@ -55,9 +55,78 @@ end
 
 function stoneGroup:FindLiberties()
     local liberties = {}
-    for _,v in ipairs(self.stones) do
 
+    
+
+    for _,v in ipairs(self.stones) do
+       local farthestCoordinate =  getFarthestLiberty(v.coordinates,v)
     end
+end
+
+function getFarthestLiberty(startingPos, stone)
+    local board = board.GetInstance()
+    local onBoardStones = board:GetStones()
+    local returnValues = {}
+    local foundLeft = false
+    local foundRight = false
+    local foundUp = false
+    local foundDown = false
+    local leftCoordinates, rightCoordinates, upCoordinates, downCoordinates
+
+    if startingPos.col > 1 then
+        leftCoordinates = coordinates.New(tartingPos.col - 1, startingPos.row)
+        for i,boardStone in ipairs(onBoardStones) do
+            if boardStone.coordinates:Compare(leftCoordinates) == false and boardStone.owner == stone.owner and stone.stoneGroup.id == boardStone.stoneGroup.id then
+                stone = boardStone
+            end
+        end
+        getFarthestLiberty(leftCoordinates,stone) 
+        
+    else
+        leftCoordinates = coordinates.New(1, startingPos.row)
+        foundLeft = true
+    end
+
+    if startingPos.col < 9 then
+        rightCoordinates = coordinates.New(tartingPos.col + 1, startingPos.row)
+        for i,boardStone in ipairs(onBoardStones) do
+            if boardStone.coordinates:Compare(rightCoordinates) == false and boardStone.owner == stone.owner and stone.stoneGroup.id == boardStone.stoneGroup.id then
+                stone = boardStone
+            end
+        end
+        getFarthestLiberty(rightCoordinates,stone)
+    else
+        rightCoordinates = coordinates.New(9, startingPos.row)
+        foundRight = true
+    end
+
+    if startingPos.row > 1 then
+        upCoordinates = coordinates.New(tartingPos.col , startingPos.row-1)
+        for i,boardStone in ipairs(onBoardStones) do
+            if boardStone.coordinates:Compare(upCoordinates) == false and boardStone.owner == stone.owner and stone.stoneGroup.id == boardStone.stoneGroup.id then
+                stone = boardStone
+            end
+        end
+        getFarthestLiberty(upCoordinates,stone) 
+    else
+        foundUp = true
+    end
+
+    local downCoordinates
+    if startingPos.col < 9 then
+        local newCordinate = coordinates.New(tartingPos.col , startingPos.row + 1)
+        for i,boardStone in ipairs(onBoardStones) do
+            if boardStone.coordinates:Compare(newCordinate) == false and boardStone.owner == stone.owner and stone.stoneGroup.id == boardStone.stoneGroup.id then
+                stone = boardStone
+            end
+        end
+        getFarthestLiberty(newCordinate,stone) 
+    else
+        
+       foundDown = true
+    end
+
+    
 end
 
 function stoneGroup:CalculateLiberties()
