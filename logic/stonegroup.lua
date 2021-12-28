@@ -83,6 +83,12 @@ function getFarthestLiberty(startingPos, stone)
         getFarthestLiberty(leftCoordinates,stone) 
         
     else
+        if stone.coordinates.col == 1 then
+            return false
+        else
+            local liberty = coordinates.New(stone.coordinates.col-1,stone.coordinates.row)
+            return liberty
+        end
         leftCoordinates = coordinates.New(1, startingPos.row)
         foundLeft = true
     end
@@ -109,6 +115,7 @@ function getFarthestLiberty(startingPos, stone)
         end
         getFarthestLiberty(upCoordinates,stone) 
     else
+        upCoordinates = coordinates.New(tartingPos.col , startingPos.row-1)
         foundUp = true
     end
 
