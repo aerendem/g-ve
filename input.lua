@@ -41,8 +41,13 @@ function input:BindInitialEvents(urutora)
                             local newStone = stone.New(game.currentTurnOwner,row,col)
                             local game = game.GetInstance()
                             local board = board.GetInstance()
-                            board:AddStoneToBoard(newStone)
-                            game:PassTurn()
+                            local addedStone = board:AddStoneToBoard(newStone)
+                            if addedStone == true then
+                                game:PassTurn()
+                            else
+                                newStone = nil
+                            end
+                            
                          end
                      end
                 end

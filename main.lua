@@ -35,7 +35,6 @@ function love.load()
 	})
 
 	clickMe:action(function(e)
-		print("AAAAAAAAAAAAAA")
 		game:StartGame()	
 		clickMe:deactivate()
 	end)

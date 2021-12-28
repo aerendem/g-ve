@@ -35,6 +35,7 @@ function stoneGroup:AddStone(stone)
         table.insert(self.stones, stone)
     end
    
+    stone.stoneGroup = self
 end
 
 function stoneGroup:RemoveStone()
@@ -42,10 +43,20 @@ function stoneGroup:RemoveStone()
 end
 
 function stoneGroup:CheckForCapture()
-    self:CalculateLiberties()
+    local groupLiberties = self:CalculateLiberties()
 
-    if #self.liberties == 0 then
+    if #groupLiberties == 0 then
+        print(#groupLiberties)
+        pprint("self.liberties", self.liberties)
+        pprint("self.owner", self.owner)
         self:CaptureGroup()
+    end
+end
+
+function stoneGroup:FindLiberties()
+    local liberties = {}
+    for _,v in ipairs(self.stones) do
+
     end
 end
 
@@ -65,39 +76,34 @@ function stoneGroup:CalculateLiberties()
         local isDownEmpty = true
 
         for i, sameGroupStone in ipairs(self.stones) do
-            if sameGroupStone.coordinates.col == left then
-                isLeftEmpty = false
-            elseif sameGroupStone.coordinates.col == right then
-                isRightEmpty = false
-            end
-            if sameGroupStone.coordinates.row == up then
-                isUpEmpty = false
-            elseif sameGroupStone.coordinates.row == down then
-                isDownEmpty = false
-            end
-        end
-
-        for index, stone in ipairs(onBoardStones) do
-            if stone.coordinates.col == left then
-                isLeftEmpty = false
+            if sameGroupStone ~= groupStone then
+                if sameGroupStone.coordinates.col == left then
+                    isLeftEmpty = false
+                elseif sameGroupStone.coordinates.col == right then
+                    isRightEmpty = false
+                end
+                if sameGroupStone.coordinates.row == up then
+                    isUpEmpty = false
+                elseif sameGroupStone.coordinates.row == down then
+                    isDownEmpty = false
+                end
             end
         end
 
         for index, stone in ipairs(onBoardStones) do
-            if stone.coordinates.col == right then
-                isRightEmpty = false
-            end
-        end
-
-        for index, stone in ipairs(onBoardStones) do
-            if stone.coordinates.row == up then
-                isUpEmpty = false
-            end
-        end
-
-        for index, stone in ipairs(onBoardStones) do
-            if stone.coordinates.row == down then
-                isDownEmpty = false
+            if stone ~= groupStone then
+                if stone.coordinates.col == left then
+                    isLeftEmpty = false
+                end
+                if stone.coordinates.col == right then
+                    isRightEmpty = false
+                end
+                if stone.coordinates.row == up then
+                    isUpEmpty = false
+                end
+                if stone.coordinates.row == down then
+                    isDownEmpty = false
+                end
             end
         end
 
@@ -125,10 +131,8 @@ function stoneGroup:CalculateLiberties()
             table.insert(self.liberties, v)
         end
     end
-    
-    print(#self.stones)
-    --pprint(self.liberties)
-   
+
+    return self.liberties
 end
 
 function stoneGroup:CaptureGroup()
@@ -136,29 +140,22 @@ function stoneGroup:CaptureGroup()
 
     for _,v in ipairs(self.stones) do
         board:RemoveStoneFromBoard(v)
-        v:Destroy()
     end
-
-    self:Destroy()
 end
 
-function stoneGroup:MergeGroups(otherGroups)
+function stoneGroup:MergeWithOtherGroups(otherGroups)
     for _, otherGroup in ipairs(otherGroups) do
-        print("GROUP MERGED")
         if otherGroup ~= self and self.owner == otherGroup.owner then
-            --pprint("Merged the group with id of ".. otherGroup.id.." to "..self.id)
             for _,stone in ipairs(otherGroup.stones) do
                 stone.stoneGroup = self
                 self:AddStone(stone)
-                print("STONE MERGED")
             end
-            --table.copy(otherGroup.stones, self.stones)
             otherGroup:Destroy()
         end
     end
 
     self:CalculateLiberties()
-   
+    return self 
 end
 
 function stoneGroup:Destroy()

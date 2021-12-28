@@ -17,19 +17,38 @@ function stone.New(owner, row, column)
    self.owner = owner
    self.coordinates = coordinates.New(column, row)
    self.liberties = 4 -- All stones will have an inital liberties of 4.
-   self.stoneGroup = nil --No group is associated to the stone from the beginning.
    self.id = uuid.New().uuid
 
-   self.stoneGroup = stoneGroup.New(owner, self)
+   self.stoneGroup = nil
 
-   --Check for stone groups
-   self:JoinGroup()
+   self:AttachGroupOnCreation()
 
    return self
 end
 
+function stone:AttachGroupOnCreation()
+   local nearbyGroups = self:GetNearbyGroupToAttach()
+   if nearbyGroups == false then
+      self:AttachToNewStoneGroup()
+   else
+      self:AttachToExistingStoneGroup(nearbyGroups)
+   end
+end
 
-function stone:JoinGroup()
+function stone:AttachToExistingStoneGroup(groups)
+   if #groups == 1 then
+      groups[1]:AddStone(self)
+   elseif #groups > 1 then
+      self.stoneGroup:MergeWithOtherGroups(otherGroups)
+   end
+end
+
+function stone:AttachToNewStoneGroup()
+   self.stoneGroup = stoneGroup.New(owner, self)
+   self.stoneGroup:CalculateLiberties()
+end
+
+function stone:GetNearbyGroupToAttach()
    local onBoardStones = board:GetStones()
 
    local connectedGroups = {}
@@ -43,42 +62,29 @@ function stone:JoinGroup()
       if otherStone.owner == self.owner then
          if (otherStone.coordinates.col == left or otherStone.coordinates.col == right) and otherStone.coordinates.row == self.coordinates:GetY() then
             table.insert(connectedStones, otherStone)
-            print("INSERTED TO TABLE")
          elseif (otherStone.coordinates.row == up or otherStone.coordinates.row == down) and otherStone.coordinates.col == self.coordinates:GetX() then
             table.insert(connectedStones, otherStone)
-            print("INSERTED TO TABLE")
          end
       end
    end
 
    if table.empty(connectedStones) == true then
-      print("EMPTY CONNECTED STONES")
-      return
+      return false
    end
 
    for index, connectedStone in ipairs(connectedStones) do
-      table.insert(connectedGroups, connectedStone.stoneGroup)
+      if table.find(connectedGroups, connectedStone.stoneGroup) == nil then
+         table.insert(connectedGroups, connectedStone.stoneGroup)
+      end
    end
 
    if table.empty(connectedGroups) == true then
-      print("EMPTY CONNECTED GROUPS")
-      return
+      return false
    end
 
-   self.stoneGroup:MergeGroups(connectedGroups)
+   return connectedGroups
 end
 
-function stone:LeaveGroup()
-   if self.stoneGroup == nil then
-      return
-   end
-
-
-end
-
-function stone:Place()
-
-end
 
 function stone:Destroy()
    self.stoneGroup:Destroy()

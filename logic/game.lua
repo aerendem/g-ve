@@ -78,7 +78,6 @@ function game:EndGame()
       })
    
       clickMe:action(function(e)
-         print("AAAAAAAAAAAAAA")
          game:StartGame()	
          clickMe:deactivate()
       end)

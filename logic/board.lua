@@ -43,14 +43,24 @@ end
 function board:AddStoneToBoard(stone)
    if self:CheckPositionForNewStone(stone.coordinates) == false then
       stone:Destroy()
-      return
+      return false
    end
 
-   table.insert(self.stones, stone)
+   if table.find(self.stones, stone) == nil then
+      table.insert(self.stones, stone)
+      return true
+   end
+
+   return false
 end
 
 function board:RemoveStoneFromBoard(stone)
-   self.stones[table.find(self.stones, stone)] = nil
+   print("SELF STONES")
+   print(#self.stones)
+   --table.find(self.stones, stone)
+   table.remove(self.stones, table.find(self.stones, stone))
+   --self.stones[table.find()] = nil
+   print(#self.stones)
 end
 
 function board:DrawBoard()
@@ -61,7 +71,6 @@ function board:DrawBoard()
          UI:DrawPiece(v.coordinates.row, v.coordinates.col, v.owner.color)
       end
    end
-
 end
 
 function board:Capture()
@@ -94,10 +103,15 @@ function board:Capture()
 end
 
 function board:UpdateBoard()
+   local checkedGroups = {}
    for _,v in ipairs(self.stones) do
-      print(v.stoneGroup.id)
-      v.stoneGroup:CheckForCapture()
+      if table.find(checkedGroups, v.stoneGroup.id) == nil then
+         v.stoneGroup:CheckForCapture()
+         table.insert(checkedGroups, v.stoneGroup.id)
+      end
    end
+
+   checkedGroups = nil
 end
 
 function board:CleanBoard()
