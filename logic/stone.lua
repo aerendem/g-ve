@@ -45,7 +45,8 @@ end
 
 function stone:AttachToNewStoneGroup()
    self.stoneGroup = stoneGroup.New(owner, self)
-   self.stoneGroup:CalculateLiberties()
+   --self.stoneGroup:CalculateLiberties()
+   self.stoneGroup:FindLiberties()
 end
 
 function stone:GetNearbyGroupToAttach()

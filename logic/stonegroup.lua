@@ -43,8 +43,11 @@ function stoneGroup:RemoveStone()
 end
 
 function stoneGroup:CheckForCapture()
-    local groupLiberties = self:CalculateLiberties()
-
+    --local groupLiberties = self:CalculateLiberties()
+    local groupLiberties = self:FindLiberties()
+    if groupLiberties == nil then
+        return 
+    end
     if #groupLiberties == 0 then
         print(#groupLiberties)
         pprint("self.liberties", self.liberties)
@@ -54,12 +57,115 @@ function stoneGroup:CheckForCapture()
 end
 
 function stoneGroup:FindLiberties()
-    local liberties = {}
-
-    
+    table.clear(self.liberties)
+    local groupLiberties = {}
 
     for _,v in ipairs(self.stones) do
-       local farthestCoordinate =  getFarthestLiberty(v.coordinates,v)
+       local farthestLeftCoordinate =  self:GetFarthestLiberty(v.coordinates,"Left",v)
+       local farthestRightCoordinate =  self:GetFarthestLiberty(v.coordinates,"Right",v)
+       local farthestUpCoordinate =  self:GetFarthestLiberty(v.coordinates,"Up",v)
+       local farthestDownCoordinate =  self:GetFarthestLiberty(v.coordinates,"Down",v)
+        if farthestLeftCoordinate ~= false then
+            table.insert(groupLiberties,farthestLeftCoordinate)
+        end
+        if farthestRightCoordinate ~= false then
+        table.insert(groupLiberties,farthestRightCoordinate)
+        end
+        if farthestUpCoordinate ~= false then
+        table.insert(groupLiberties,farthestUpCoordinate)
+        end
+        if farthestDownCoordinate ~= false then
+        table.insert(groupLiberties,farthestDownCoordinate)
+        end
+    end
+    table.insert(self.liberties,groupLiberties)
+    pprint(self.liberties)
+end
+
+function stoneGroup:GetFarthestLiberty(startingPos,destination,stone)
+    local board = board.GetInstance()
+    local onBoardStones = board:GetStones()
+    if destination == "Left" then
+        if startingPos.col > 1 then
+            leftCoordinates = coordinates.New(startingPos.col - 1, startingPos.row)
+            for i,boardStone in ipairs(onBoardStones) do
+                if boardStone.coordinates:Compare(leftCoordinates) == false and boardStone.owner == stone.owner and stone.stoneGroup.id == boardStone.stoneGroup.id then
+                    stone = boardStone
+                end
+            end
+            self:GetFarthestLiberty("Left",leftCoordinates,stone) 
+            
+        else
+            if stone.coordinates.col == 1 then
+                return false
+            else
+                local liberty = coordinates.New(stone.coordinates.col+1,stone.coordinates.row)
+                return liberty
+            end
+            -- leftCoordinates = coordinates.New(1, startingPos.row)
+            -- foundLeft = true
+        end
+    elseif destination == "Right" then
+        if startingPos.col < 9 then
+            rightCoordinates = coordinates.New(startingPos.col + 1, startingPos.row)
+            for i,boardStone in ipairs(onBoardStones) do
+                if boardStone.coordinates:Compare(rightCoordinates) == false and boardStone.owner == stone.owner and stone.stoneGroup.id == boardStone.stoneGroup.id then
+                    stone = boardStone
+                end
+            end
+            self:GetFarthestLiberty("Right",rightCoordinates,stone) 
+            
+        else
+            if stone.coordinates.col == 9 then
+                return false
+            else
+                local liberty = coordinates.New(stone.coordinates.col+1,stone.coordinates.row)
+                return liberty
+            end
+            -- leftCoordinates = coordinates.New(1, startingPos.row)
+            -- foundLeft = true
+        end
+
+    elseif destination == "Up" then
+        if startingPos.row > 1 then
+            upCoordinates = coordinates.New(startingPos.col, startingPos.row - 1)
+            for i,boardStone in ipairs(onBoardStones) do
+                if boardStone.coordinates:Compare(upCoordinates) == false and boardStone.owner == stone.owner and stone.stoneGroup.id == boardStone.stoneGroup.id then
+                    stone = boardStone
+                end
+            end
+            self:GetFarthestLiberty("Up",upCoordinates,stone) 
+            
+        else
+            if stone.coordinates.row == 1 then
+                return false
+            else
+                local liberty = coordinates.New(stone.coordinates.col,stone.coordinates.row - 1)
+                return liberty
+            end
+            -- leftCoordinates = coordinates.New(1, startingPos.row)
+            -- foundLeft = true
+        end
+    elseif destination == "Down" then
+        if startingPos.row < 9 then
+            downCoordinates = coordinates.New(startingPos.col, startingPos.row + 1)
+            for i,boardStone in ipairs(onBoardStones) do
+                if boardStone.coordinates:Compare(downCoordinates) == false and boardStone.owner == stone.owner and stone.stoneGroup.id == boardStone.stoneGroup.id then
+                    stone = boardStone
+                end
+            end
+            self:GetFarthestLiberty("Down",downCoordinates,stone) 
+            
+        else
+            if stone.coordinates.row == 9 then
+                return false
+            else
+                local liberty = coordinates.New(stone.coordinates.col,stone.coordinates.row + 1)
+                return liberty
+            end
+            -- leftCoordinates = coordinates.New(1, startingPos.row)
+            -- foundLeft = true
+        end
     end
 end
 
@@ -230,7 +336,8 @@ function stoneGroup:MergeWithOtherGroups(otherGroups)
         end
     end
 
-    self:CalculateLiberties()
+    --self:CalculateLiberties()
+    self:FindLiberties()
     return self 
 end
 
