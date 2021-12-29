@@ -19,7 +19,7 @@ function stone.New(owner, row, column)
    self.liberties = 4 -- All stones will have an inital liberties of 4.
    self.id = uuid.New().uuid
 
-   self.stoneGroup = nil
+   self.stoneGroup = stoneGroup.New(self.owner, self)
 
    self:AttachGroupOnCreation()
 
@@ -28,7 +28,7 @@ end
 
 function stone:AttachGroupOnCreation()
    local nearbyGroups = self:GetNearbyGroupToAttach()
-   if nearbyGroups == false then
+   if nearbyGroups == false or nearbyGroups == nil then
       self:AttachToNewStoneGroup()
    else
       self:AttachToExistingStoneGroup(nearbyGroups)
