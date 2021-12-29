@@ -41,7 +41,14 @@ function board:CheckPositionForNewStone(newStoneCoordination)
 end
 
 function board:AddStoneToBoard(stone)
+   --Checking if any other stone in that exact position
    if self:CheckPositionForNewStone(stone.coordinates) == false then
+      stone:Destroy()
+      return false
+   end
+
+   --Checking if it's a suicidal act
+   if #stone.stoneGroup:FindLiberties() == 0 then
       stone:Destroy()
       return false
    end
@@ -55,12 +62,7 @@ function board:AddStoneToBoard(stone)
 end
 
 function board:RemoveStoneFromBoard(stone)
-   print("SELF STONES")
-   print(#self.stones)
-   --table.find(self.stones, stone)
    table.remove(self.stones, table.find(self.stones, stone))
-   --self.stones[table.find()] = nil
-   print(#self.stones)
 end
 
 function board:DrawBoard()
@@ -73,45 +75,24 @@ function board:DrawBoard()
    end
 end
 
-function board:Capture()
-   --[[ foreach (Coord coord in capturedGroup.GetStones())
-   {
-       // Update the board and add the capture
-       _gridStones[coord.Column, coord.Row] = State.None;
-       _gridGroups[coord.Column, coord.Row] = 0;
-       switch (color)
-       {
-           case State.Black:
-               _capBlack++;
-               break;
-           case State.White:
-               _capWhite++;
-               break;
-           case State.None:
-               break;
-           default:
-               throw new ArgumentOutOfRangeException(nameof(color), color, null);
-       }
-       // Update all groups liberties/adjacent data
-       foreach (Group g in _groups.Values)
-       {
-           g.RemoveStone(coord);
-       }
-   }
-   // Remove the group from the board
-   DeleteGroup(capturedGroup); ]]
-end
-
 function board:UpdateBoard()
    local checkedGroups = {}
+   local removedStoneCount = 0
    for _,v in ipairs(self.stones) do
       if table.find(checkedGroups, v.stoneGroup.id) == nil then
-         v.stoneGroup:CheckForCapture()
+         local removed, latestRemovalCount = v.stoneGroup:CheckForCapture()
+
          table.insert(checkedGroups, v.stoneGroup.id)
+
+         if removed == true then
+            removedStoneCount = removedStoneCount + latestRemovalCount
+         end
       end
    end
 
    checkedGroups = nil
+
+   return removedStoneCount
 end
 
 function board:CleanBoard()

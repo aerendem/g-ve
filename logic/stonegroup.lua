@@ -47,14 +47,14 @@ function stoneGroup:CheckForCapture()
     local groupLiberties = self:FindLiberties()
 
     if groupLiberties == nil then
-        return 
+        return false
     end
 
     if #groupLiberties == 0 then
-        print(#groupLiberties)
-        pprint("self.liberties", self.liberties)
-        pprint("self.owner", self.owner)
-        self:CaptureGroup()
+        local removedStoneCount = self:CaptureGroup()
+        return true, removedStoneCount
+    else
+        return false
     end
 end
 
@@ -383,10 +383,13 @@ end
 
 function stoneGroup:CaptureGroup()
     local board = board.GetInstance()
-
+    local removedStoneCount = 0
     for _,v in ipairs(self.stones) do
         board:RemoveStoneFromBoard(v)
+        removedStoneCount = removedStoneCount + 1
     end
+
+    return removedStoneCount
 end
 
 function stoneGroup:MergeWithOtherGroups(otherGroups)

@@ -38,14 +38,18 @@ function input:BindInitialEvents(urutora)
                     if (x - 15 <=  (55 + ((col-1) * 53)) and  x + 15 >=  (55 + ((col-1) * 53)))  then
                         if (y - 15 <=  (55 + ((row-1) * 53)) and  y + 15 >=  (55 + ((row-1) * 53)))  then
                             print(row,col)
-                            local newStone = stone.New(game.currentTurnOwner,row,col)
                             local game = game.GetInstance()
                             local board = board.GetInstance()
+
+                            local newStone = stone.New(game.currentTurnOwner,row,col)
+                           
                             local addedStone = board:AddStoneToBoard(newStone)
+
+                            print("ADDED STONE")
                             if addedStone == true then
                                 game:PassTurn()
                             else
-                                newStone = nil
+                                newStone:Destroy()
                             end
                             
                          end

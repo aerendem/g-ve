@@ -17,7 +17,7 @@ function game.New(gameState, player1, player2)
    self.player1 = player1
    self.player2 = player2
 
-   self.currentTurnOwner = nil --Player object
+   self.currentTurnOwner = player1 --Player object
 
    self.winner = nil
 
@@ -93,8 +93,14 @@ function game:ShowScores()
 end
 
 function game:PassTurn()   
-   board:UpdateBoard()
+   local totalRemovedStoneCount = board:UpdateBoard()
 
+   --Increase score
+   if self.currentTurnOwner ~= nil then
+      self.currentTurnOwner.score = self.currentTurnOwner.score + totalRemovedStoneCount
+   end
+ 
+   --Pass the current turn ownership
    if self.currentTurnOwner == self.player1 then
       self.currentTurnOwner = self.player2
    else
