@@ -48,12 +48,15 @@ function board:AddStoneToBoard(stone)
    end
 
    --Checking if it's a suicidal act
-   if #stone.stoneGroup:FindLiberties() == 0 then
+   if #stone.stoneGroup:FindLiberties() == 0 or (stone.coordinates:Compare(stone.owner.lastStonePlacedCoordinates) == false) then
       stone:Destroy()
       return false
    end
 
+
    if table.find(self.stones, stone) == nil then
+      stone.owner.lastStonePlacedCoordinates = stone.coordinates
+
       table.insert(self.stones, stone)
       return true
    end

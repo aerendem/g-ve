@@ -11,11 +11,10 @@ function player.New(name, color)
    self.score = 0
    self.name = name
 
-    return self
-end
+   self.lastStonePlacedCoordinates = nil
+   self.lastStoneGotEatenCoordinates = nil
 
-function player:PrintColor() 
-   love.graphics.print(self.color, 0, 0, 0, 5, 5) 
+   return self
 end
 
 return player

@@ -22,6 +22,10 @@ function coordinates:GetY()
 end
 
 function coordinates:Compare(otherCoordinate)
+    if otherCoordinate == nil then
+        return true
+    end
+
     if self.col == otherCoordinate.col and self.row == otherCoordinate.row then
         return false
     end
