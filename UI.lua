@@ -20,8 +20,6 @@ function UI.new(field_lines, field_size)
     self.__index = self
     self.field_lines = field_lines or 0
     self.field_size = field_size or 0
-    self.score_a = 0
-    self.score_b = 0
 
     canvas = love.graphics.newCanvas(w, h)
     canvas:setFilter('nearest', 'nearest')
@@ -33,12 +31,6 @@ function UI.new(field_lines, field_size)
     urutora.setResolution(canvas:getWidth(), canvas:getHeight())
 
     return self
-end
-
----Used to update each player's score according to given parameter
-function UI:UpdateScores(scoreA, scoreB)
-    self.score_a = scoreA
-    self.score_b = scoreB
 end
 
 ---Used to draw board for placing stones
