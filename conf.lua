@@ -1,3 +1,4 @@
+---Engine method to set configuration of game
 function love.conf(t)
     t.identity = "go_game"
     t.appendidentity = false
