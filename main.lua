@@ -11,7 +11,7 @@ end
 game = require("logic/game")
 require("logic/board")
 urutora = require("dependencies/urutora")
-local UI = require('UI')
+UI = require('UI')
 local stone = require("logic/stone")
 local input = require("input")
 

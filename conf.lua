@@ -1,5 +1,4 @@
----Engine method to set configuration of game
-function love.conf(t)
+function love.conf(t) ---Engine method to set configuration of game
     t.identity = "go_game"
     t.appendidentity = false
     t.version = "11.3"
