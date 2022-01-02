@@ -2,8 +2,7 @@ local UI = {}
 UI.__index = UI
 
 require("love")
-
-local urutora = require('dependencies/urutora')
+require('dependencies/urutora')
 local colors = require("dependencies/colors")
 
 function UI.new(field_lines, field_size)
@@ -14,12 +13,12 @@ function UI.new(field_lines, field_size)
     self.field_size = field_size or 0
     self.score_a = 0
     self.score_b = 0
-    self.completion_num = 20
 
     canvas = love.graphics.newCanvas(w, h)
     canvas:setFilter('nearest', 'nearest')
 
     love.graphics.setNewFont("fonts/BagnardSans.otf", 16)
+
     local font1 = love.graphics.newFont('fonts/BagnardSans.otf', 16)
     urutora.setDefaultFont(font1)
     urutora.setResolution(canvas:getWidth(), canvas:getHeight())
@@ -50,7 +49,7 @@ function UI:DrawScores(player1, player2)
                         self.field_size / 4)
     love.graphics.print(player2.name..": " .. player2.score, 3 * self.field_size,
                         self.field_size / 4)
-    love.graphics.print("Completion: " .. self.completion_num %
+    love.graphics.print("Completion: " .. game.scoreGoal %
                             (self.field_lines * self.field_lines),
                         6 * self.field_size, self.field_size / 4)
 end
@@ -59,14 +58,20 @@ function UI:DrawPiece(row, column, color)
     love.graphics.setColor(color[1], color[2], color[3])
     love.graphics.circle("fill", column * self.field_size,
                          row * self.field_size, 20)
-                
 end
 
-function UI:DrawWinnerLabel(winnerPlayer)
-    local label = urutora.text({ winnerPlayer.name .. "has won with "..winnerPlayer.score.." score", 250, 250, self.field_size,
-    self.field_size})
-    label:draw()
-    love.graphics.print(winnerPlayer.name .. "has won with "..winnerPlayer.score.." score", 250, 250)
+function UI:DrawWinnerLabel()
+    if game.winner == nil then
+        return
+    end
+
+    love.graphics.print(game.winner.name .. " has won with "..game.winner.score.." score", 160, 175)
+end
+
+function UI:Draw()
+    if game.state == 3 then
+        UI:DrawWinnerLabel()
+    end
 end
 
 return UI

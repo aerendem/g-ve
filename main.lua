@@ -5,7 +5,7 @@ end
 
 game = require("logic/game")
 require("logic/board")
-local urutora = require("dependencies/urutora")
+urutora = require("dependencies/urutora")
 local draw = require('UI')
 local stone = require("logic/stone")
 local input = require("input")
@@ -30,7 +30,7 @@ function love.load()
 
 	local clickMe = urutora.button({
 		text = 'Click to start!',
-		x = 300, y = 300,
+		x = 150, y = 250,
 		w = 200,
 	})
 
@@ -46,6 +46,7 @@ function love.draw()
 	urutora:draw()
 	board:DrawBoard()
 	game:ShowScores()
+	UI:Draw()
 end
 
 function love.update(dt)

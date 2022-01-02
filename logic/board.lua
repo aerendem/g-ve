@@ -48,7 +48,8 @@ function board:AddStoneToBoard(stone)
    end
 
    --Checking if it's a suicidal act
-   if #stone.stoneGroup:FindLiberties() == 0 or (stone.coordinates:Compare(stone.owner.lastStonePlacedCoordinates) == false) then
+   if #stone.stoneGroup:FindLiberties() == 0 and 
+   (stone.coordinates:Compare(stone.owner.lastStonePlacedCoordinates) == false or stone.coordinates:Compare(stone.owner.lastStoneGotEatenCoordinates) == false) then
       stone:Destroy()
       return false
    end
@@ -65,7 +66,18 @@ function board:AddStoneToBoard(stone)
 end
 
 function board:RemoveStoneFromBoard(stone)
+   stone.owner.lastStoneGotEatenCoordinates = stone.coordinates
    table.remove(self.stones, table.find(self.stones, stone))
+end
+
+function board:GetSameCoordinateStone(coordinates)
+   for _,v in ipairs(self.stones) do
+      if coordinates:Compare(v.coordinates) == false then
+         return v
+     end
+   end
+
+   return false
 end
 
 function board:DrawBoard()

@@ -89,8 +89,6 @@ function stoneGroup:FindLiberties()
         end
     end
 
-    pprint("************************************************************")
-    pprint(self.liberties)
     return self.liberties
 end
 
@@ -99,6 +97,7 @@ function stoneGroup:GetFarthestLiberty(startingPos,destination,stone, returnArg)
     local onBoardStones = board:GetStones()
     local returnValue   
     local stone = stone
+
     if returnArg ~= nil then
         returnValue = returnArg
     else
@@ -110,6 +109,10 @@ function stoneGroup:GetFarthestLiberty(startingPos,destination,stone, returnArg)
         if startingPos.col > 1 then
             for i,boardStone in ipairs(onBoardStones) do
                 if leftCoordinates:Compare(boardStone.coordinates) == false and boardStone.owner ~= stone.owner then
+                    if returnArg ~= nil and board:GetSameCoordinateStone(startingPos) == false then
+                        return startingPos
+                    end
+                    
                     return false
                 end
 
@@ -145,6 +148,9 @@ function stoneGroup:GetFarthestLiberty(startingPos,destination,stone, returnArg)
             
             for i,boardStone in ipairs(onBoardStones) do
                 if rightCoordinates:Compare(boardStone.coordinates) == false and boardStone.owner ~= stone.owner then
+                    if returnArg ~= nil and board:GetSameCoordinateStone(startingPos) == false then
+                        return startingPos
+                    end
                     return false
                 end
 
@@ -175,6 +181,10 @@ function stoneGroup:GetFarthestLiberty(startingPos,destination,stone, returnArg)
         if startingPos.row > 1 then
             for i,boardStone in ipairs(onBoardStones) do
                 if upCoordinates:Compare(boardStone.coordinates) == false and boardStone.owner ~= stone.owner then
+                    if returnArg ~= nil and board:GetSameCoordinateStone(startingPos) == false then
+                        return startingPos
+                    end
+
                     return false
                 end
 
@@ -204,6 +214,9 @@ function stoneGroup:GetFarthestLiberty(startingPos,destination,stone, returnArg)
         if startingPos.row < 9 then
             for i,boardStone in ipairs(onBoardStones) do
                 if downCoordinates:Compare(boardStone.coordinates) == false and boardStone.owner ~= stone.owner then
+                    if returnArg ~= nil and board:GetSameCoordinateStone(startingPos) == false then
+                        return startingPos
+                    end
                     return false
                 end
 
@@ -236,12 +249,9 @@ end
 function getFarthestLiberty(startingPos, stone)
     local board = board.GetInstance()
     local onBoardStones = board:GetStones()
-    local returnValues = {}
-    local foundLeft = false
-    local foundRight = false
-    local foundUp = false
-    local foundDown = false
+    local foundLeft, foundRight, foundUp, foundDown = false, false, false, false
     local leftCoordinates, rightCoordinates, upCoordinates, downCoordinates
+    local returnValues = {}
 
     if startingPos.col > 1 then
         leftCoordinates = coordinates.New(tartingPos.col - 1, startingPos.row)
@@ -250,8 +260,8 @@ function getFarthestLiberty(startingPos, stone)
                 stone = boardStone
             end
         end
+
         getFarthestLiberty(leftCoordinates,stone) 
-        
     else
         if stone.coordinates.col == 1 then
             return false
@@ -270,6 +280,7 @@ function getFarthestLiberty(startingPos, stone)
                 stone = boardStone
             end
         end
+
         getFarthestLiberty(rightCoordinates,stone)
     else
         rightCoordinates = coordinates.New(9, startingPos.row)
@@ -316,10 +327,7 @@ function stoneGroup:CalculateLiberties()
         local stoneLiberties = {}
 
         local left, up, right, down = groupStone.coordinates.col - 1, groupStone.coordinates.row - 1, groupStone.coordinates.col + 1, groupStone.coordinates.row + 1
-        local isLeftEmpty = true
-        local isRightEmpty = true
-        local isUpEmpty = true
-        local isDownEmpty = true
+        local isLeftEmpty, isRightEmpty, isUpEmpty, isDownEmpty = true, true, true, true
 
         for i, sameGroupStone in ipairs(self.stones) do
             if sameGroupStone ~= groupStone then
@@ -403,8 +411,8 @@ function stoneGroup:MergeWithOtherGroups(otherGroups)
         end
     end
 
-    --self:CalculateLiberties()
     self:FindLiberties()
+
     return self 
 end
 
