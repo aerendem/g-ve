@@ -5,7 +5,7 @@ board = {}
 board.__index = board
 
 -------------------------
---DEPENDENCIES
+--Dependencies
 -------------------------
 require("love")
 require("UI")
@@ -15,7 +15,7 @@ require("dependencies/table")
 local instance
 
 -------------------------
---CONSTRUCTOR
+--Constructor
 -------------------------
 function board.New(boardLines)
    local self = setmetatable({}, board)
@@ -37,6 +37,7 @@ function board.GetInstance(boardLines)
    return instance
 end
 
+---Used to get all the stones placed on the board
 function board:GetStones()
    return self.stones
 end
