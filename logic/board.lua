@@ -11,8 +11,12 @@ require("love")
 require("UI")
 require("dependencies/table")
 
+--Singleton Instance
 local instance
 
+-------------------------
+--CONSTRUCTOR
+-------------------------
 function board.New(boardLines)
    local self = setmetatable({}, board)
 
@@ -24,6 +28,7 @@ function board.New(boardLines)
    return self
 end
 
+---Singleton Instance Getter
 function board.GetInstance(boardLines)
    if instance == nil then
       instance =  board.New(boardLines)
