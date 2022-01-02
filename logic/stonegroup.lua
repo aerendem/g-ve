@@ -1,6 +1,12 @@
+-------------------------
+--Declaration
+-------------------------
 local stoneGroup = {}
 stoneGroup.__index = stoneGroup
 
+-------------------------
+--Dependencies
+-------------------------
 require("love")
 require("dependencies/uuid")
 require("UI")
@@ -9,6 +15,9 @@ require("logic/board")
 local pprint = require("dependencies/pprint")
 local coordinates = require("dependencies/coordinates")
 
+-------------------------
+--Constructor
+-------------------------
 function stoneGroup.New(owner, firstStone)
    local self = setmetatable({}, stoneGroup)
 
@@ -22,14 +31,17 @@ function stoneGroup.New(owner, firstStone)
    return self
 end
 
+---Used to get liberties of stone group
 function stoneGroup:GetLiberties()
     return self.liberties
 end
 
+---Used to get stones in stone group
 function stoneGroup:GetStones()
     return self.stones
 end
 
+---Used to add stone in stone group
 function stoneGroup:AddStone(stone)
     if table.find(self.stones, stone) == nil then
         table.insert(self.stones, stone)
@@ -38,12 +50,13 @@ function stoneGroup:AddStone(stone)
     stone.stoneGroup = self
 end
 
+---Used to remove stone from stone group
 function stoneGroup:RemoveStone()
     self.stones[table.find(self.stones, stone)] = nil
 end
 
+---Used to check liberties of stone group and if there is none, calls capturing function for stone group
 function stoneGroup:CheckForCapture()
-    --local groupLiberties = self:CalculateLiberties()
     local groupLiberties = self:FindLiberties()
 
     if groupLiberties == nil then
@@ -58,6 +71,7 @@ function stoneGroup:CheckForCapture()
     end
 end
 
+---Used to find liberties of each stone in stone group
 function stoneGroup:FindLiberties()
     table.clear(self.liberties)
 
@@ -92,6 +106,7 @@ function stoneGroup:FindLiberties()
     return self.liberties
 end
 
+---Used to find farthest liberty of stone with controlling 4 sides of stone recursively
 function stoneGroup:GetFarthestLiberty(startingPos,destination,stone, returnArg)
     local board = board.GetInstance()
     local onBoardStones = board:GetStones()
@@ -123,12 +138,9 @@ function stoneGroup:GetFarthestLiberty(startingPos,destination,stone, returnArg)
             returnValue = self:GetFarthestLiberty(leftCoordinates ,"Left", stone, returnValue) 
         
         else
-            print("Checked last col")
             if stone.coordinates.col == 1 then
-                print("last stone is in col 1")
                 return false
             else
-                print("LAST STONE FOUND", liberty)
                 local liberty = coordinates.New(stone.coordinates.col-1,stone.coordinates.row)
 
                 for _,boardStone in ipairs(onBoardStones) do
@@ -139,9 +151,8 @@ function stoneGroup:GetFarthestLiberty(startingPos,destination,stone, returnArg)
 
                 return liberty
             end
-            -- leftCoordinates = coordinates.New(1, startingPos.row)
-            -- foundLeft = true
         end
+
     elseif destination == "Right" then
         local rightCoordinates = coordinates.New(startingPos.col + 1, startingPos.row)
         if startingPos.col < 9 then
@@ -172,8 +183,6 @@ function stoneGroup:GetFarthestLiberty(startingPos,destination,stone, returnArg)
                 end
                 return liberty
             end
-            -- leftCoordinates = coordinates.New(1, startingPos.row)
-            -- foundLeft = true
         end
 
     elseif destination == "Up" then
@@ -206,9 +215,8 @@ function stoneGroup:GetFarthestLiberty(startingPos,destination,stone, returnArg)
                 end
                 return liberty
             end
-            -- leftCoordinates = coordinates.New(1, startingPos.row)
-            -- foundLeft = true
         end
+
     elseif destination == "Down" then
         local  downCoordinates = coordinates.New(startingPos.col, startingPos.row + 1)
         if startingPos.row < 9 then
@@ -238,157 +246,13 @@ function stoneGroup:GetFarthestLiberty(startingPos,destination,stone, returnArg)
                 end
                 return liberty
             end
-            -- leftCoordinates = coordinates.New(1, startingPos.row)
-            -- foundLeft = true
         end
     end
 
     return returnValue 
 end
 
-function getFarthestLiberty(startingPos, stone)
-    local board = board.GetInstance()
-    local onBoardStones = board:GetStones()
-    local foundLeft, foundRight, foundUp, foundDown = false, false, false, false
-    local leftCoordinates, rightCoordinates, upCoordinates, downCoordinates
-    local returnValues = {}
-
-    if startingPos.col > 1 then
-        leftCoordinates = coordinates.New(tartingPos.col - 1, startingPos.row)
-        for i,boardStone in ipairs(onBoardStones) do
-            if boardStone.coordinates:Compare(leftCoordinates) == false and boardStone.owner == stone.owner and stone.stoneGroup.id == boardStone.stoneGroup.id then
-                stone = boardStone
-            end
-        end
-
-        getFarthestLiberty(leftCoordinates,stone) 
-    else
-        if stone.coordinates.col == 1 then
-            return false
-        else
-            local liberty = coordinates.New(stone.coordinates.col-1,stone.coordinates.row)
-            return liberty
-        end
-        leftCoordinates = coordinates.New(1, startingPos.row)
-        foundLeft = true
-    end
-
-    if startingPos.col < 9 then
-        rightCoordinates = coordinates.New(tartingPos.col + 1, startingPos.row)
-        for i,boardStone in ipairs(onBoardStones) do
-            if boardStone.coordinates:Compare(rightCoordinates) == false and boardStone.owner == stone.owner and stone.stoneGroup.id == boardStone.stoneGroup.id then
-                stone = boardStone
-            end
-        end
-
-        getFarthestLiberty(rightCoordinates,stone)
-    else
-        rightCoordinates = coordinates.New(9, startingPos.row)
-        foundRight = true
-    end
-
-    if startingPos.row > 1 then
-        upCoordinates = coordinates.New(tartingPos.col , startingPos.row-1)
-        for i,boardStone in ipairs(onBoardStones) do
-            if boardStone.coordinates:Compare(upCoordinates) == false and boardStone.owner == stone.owner and stone.stoneGroup.id == boardStone.stoneGroup.id then
-                stone = boardStone
-            end
-        end
-        getFarthestLiberty(upCoordinates,stone) 
-    else
-        upCoordinates = coordinates.New(tartingPos.col , startingPos.row-1)
-        foundUp = true
-    end
-
-    local downCoordinates
-    if startingPos.col < 9 then
-        local newCordinate = coordinates.New(tartingPos.col , startingPos.row + 1)
-        for i,boardStone in ipairs(onBoardStones) do
-            if boardStone.coordinates:Compare(newCordinate) == false and boardStone.owner == stone.owner and stone.stoneGroup.id == boardStone.stoneGroup.id then
-                stone = boardStone
-            end
-        end
-        getFarthestLiberty(newCordinate,stone) 
-    else
-        
-       foundDown = true
-    end
-
-    
-end
-
-function stoneGroup:CalculateLiberties()
-    local board = board.GetInstance()
-    local onBoardStones = board:GetStones()
-
-    table.clear(self.liberties)
-
-    for i,groupStone in ipairs(self.stones) do
-        local stoneLiberties = {}
-
-        local left, up, right, down = groupStone.coordinates.col - 1, groupStone.coordinates.row - 1, groupStone.coordinates.col + 1, groupStone.coordinates.row + 1
-        local isLeftEmpty, isRightEmpty, isUpEmpty, isDownEmpty = true, true, true, true
-
-        for i, sameGroupStone in ipairs(self.stones) do
-            if sameGroupStone ~= groupStone then
-                if sameGroupStone.coordinates.col == left then
-                    isLeftEmpty = false
-                elseif sameGroupStone.coordinates.col == right then
-                    isRightEmpty = false
-                end
-                if sameGroupStone.coordinates.row == up then
-                    isUpEmpty = false
-                elseif sameGroupStone.coordinates.row == down then
-                    isDownEmpty = false
-                end
-            end
-        end
-
-        for index, stone in ipairs(onBoardStones) do
-            if stone ~= groupStone then
-                if stone.coordinates.col == left then
-                    isLeftEmpty = false
-                end
-                if stone.coordinates.col == right then
-                    isRightEmpty = false
-                end
-                if stone.coordinates.row == up then
-                    isUpEmpty = false
-                end
-                if stone.coordinates.row == down then
-                    isDownEmpty = false
-                end
-            end
-        end
-
-        if isLeftEmpty then
-            local coordinates = coordinates.New(left, groupStone.coordinates.row)
-            table.insert(stoneLiberties, coordinates)
-        end
-
-        if isRightEmpty then
-            local coordinates = coordinates.New(right, groupStone.coordinates.row)
-            table.insert(stoneLiberties, coordinates)
-        end
-
-        if isUpEmpty then
-            local coordinates = coordinates.New(groupStone.coordinates.col, up)
-            table.insert(stoneLiberties, coordinates)
-        end
-
-        if isDownEmpty then
-            local coordinates = coordinates.New(groupStone.coordinates.col, down)
-            table.insert(stoneLiberties, coordinates)
-        end
-
-        for _,v in ipairs(stoneLiberties) do
-            table.insert(self.liberties, v)
-        end
-    end
-
-    return self.liberties
-end
-
+---Used to remove each stone in captured group
 function stoneGroup:CaptureGroup()
     local board = board.GetInstance()
     local removedStoneCount = 0
@@ -400,6 +264,7 @@ function stoneGroup:CaptureGroup()
     return removedStoneCount
 end
 
+---Used to merge different groups and remove empty groups
 function stoneGroup:MergeWithOtherGroups(otherGroups)
     for _, otherGroup in ipairs(otherGroups) do
         if otherGroup ~= self and self.owner == otherGroup.owner then
@@ -416,6 +281,7 @@ function stoneGroup:MergeWithOtherGroups(otherGroups)
     return self 
 end
 
+---Used destroy stone group
 function stoneGroup:Destroy()
     self = nil
 end
