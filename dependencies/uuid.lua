@@ -1,6 +1,12 @@
+-------------------------
+--Declaration
+-------------------------
 uuid = {}
 uuid.__index = uuid
 
+-------------------------
+--Constructor
+-------------------------
 function uuid.New()
     local self = setmetatable({}, uuid)
     self.__index = self
@@ -12,8 +18,6 @@ function uuid.New()
         local v = (c == 'x') and random(0, 0xf) or random(8, 0xb)
         return string.format('%x', v)
     end)
-
-    print(self.uuid)
 
     return self
 end
