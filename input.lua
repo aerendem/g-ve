@@ -25,6 +25,14 @@ end
 
 ---Used to bind mouse pressed event for placing stone according to coordinates of mouse when it is pressed
 function input:BindInitialEvents(urutora)
+    function love.keypressed(k, scancode, isrepeat)
+        urutora:keypressed(k, scancode, isrepeat)
+    
+        if k == 'escape' then
+            love.event.quit()
+        end
+    end
+
     function love.mousepressed(x, y, button) 
         urutora:pressed(x, y) 
         if game.state == 2 then
@@ -49,6 +57,11 @@ function input:BindInitialEvents(urutora)
             end
         end
     end
+
+    function love.mousemoved(x, y, dx, dy) urutora:moved(x, y, dx, dy) end
+    function love.mousereleased(x, y, button) urutora:released(x, y) end
+    function love.textinput(text) urutora:textinput(text) end
+    function love.wheelmoved(x, y) urutora:wheelmoved(x, y) end
 end
 
 
