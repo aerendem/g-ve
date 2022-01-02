@@ -1,6 +1,12 @@
+-------------------------
+--Declaration
+-------------------------
 board = {}
 board.__index = board
 
+-------------------------
+--DEPENDENCIES
+-------------------------
 require("love")
 require("UI")
 require("dependencies/table")
